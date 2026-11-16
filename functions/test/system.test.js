@@ -15,6 +15,7 @@ import {
   sanitizeSpotifyEmbed
 } from '../src/policy.js'
 import { csvCell, toCsv } from '../../js/csv.js'
+import { adminIsActive, authFailureText, canCreateAdminAccount, describeFailure, setupNextStep } from '../../js/access.js'
 import { invitationUrl, tokenFromScan, whatsappShareUrl } from '../../js/links.js'
 import { countdownParts, formatLongDate, formatTimeLabel, zonedTimeToUtc } from '../../js/time.js'
 import { qrcode } from '../../js/vendor/qrcode.mjs'
@@ -312,11 +313,39 @@ test('un fallo de instalación dice qué función y qué dirección fallaron', (
   assert.match(secret, /functions\/permission-denied/)
 })
 
+test('la instalación no crea otra cuenta y el panel exige active', () => {
+  const uid = 'mu81tHSQCARVz2GNe780uupXF4s1'
+  assert.equal(canCreateAdminAccount({ completed: false, designatedUid: uid }), false)
+  assert.equal(canCreateAdminAccount({ completed: true, designatedUid: '' }), false)
+  assert.equal(canCreateAdminAccount({ completed: false, designatedUid: '' }), true)
+  assert.equal(adminIsActive({ active: true }), true)
+  assert.equal(adminIsActive({ active: false }), false)
+  assert.equal(adminIsActive({}), false)
+  assert.equal(setupNextStep({ completed: true, signedIn: false }), 'panel-only')
+  assert.equal(setupNextStep({ completed: false, signedIn: false }), 'sign-in')
+  assert.equal(setupNextStep({ signedIn: true, adminExists: false, active: false }), 'missing-document')
+  assert.equal(setupNextStep({ signedIn: true, adminExists: true, active: false }), 'inactive-document')
+  assert.equal(setupNextStep({ completed: true, signedIn: true, adminExists: true, active: true }), 'open-panel')
+  assert.match(authFailureText('auth/unauthorized-domain'), /jeyson567\.github\.io/)
+  assert.match(authFailureText('auth/email-already-in-use'), /No se creará otra cuenta/)
+  assert.match(authFailureText('auth/invalid-credential'), /incorrectos/)
+  assert.match(authFailureText('auth/user-not-found'), /incorrectos/)
+  assert.match(authFailureText('permission-denied'), /Firestore/)
+  assert.match(authFailureText('failed-precondition'), /índice/)
+  assert.match(describeFailure({ code: 'permission-denied', message: 'Missing or insufficient permissions.' }, 'falló'), /Firestore/)
+  const rules = fs.readFileSync(new URL('firestore.rules', root), 'utf8')
+  assert.match(rules, /data\.active == true/)
+  const setup = fs.readFileSync(new URL('js/setup.js', root), 'utf8')
+  assert.match(setup, /admin\.html/)
+  assert.equal(setup.includes('setDoc(doc(state.db, \'admins\''), false)
+})
+
 test('el cliente apunta a jsagency y los enlaces no usan su hosting', () => {
   const config = fs.readFileSync(new URL('js/firebase-config.js', root), 'utf8')
   const links = fs.readFileSync(new URL('js/links.js', root), 'utf8')
   assert.match(config, /projectId: 'jsagency-b607c'/)
   assert.match(config, /authDomain: 'jsagency-b607c\.firebaseapp\.com'/)
+  assert.match(config, /getFirestore\(app, 'default'\)/)
   assert.equal(config.includes('cumpleheyli'), false)
   assert.equal(config.includes('.web.app'), false)
   assert.equal(links.includes('.web.app'), false)

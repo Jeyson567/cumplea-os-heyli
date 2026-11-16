@@ -18,27 +18,37 @@
     <section class="gate panel">
       <p class="eyebrow">Instalación de un solo uso</p>
       <h1>Primer administrador</h1>
-      <p>Esta pantalla solo crea la cuenta en Firebase Authentication y muestra su UID. No concede el permiso. No está enlazada desde la invitación ni desde el panel.</p>
+      <p>Esta pantalla inicia sesión, muestra el UID y comprueba el documento que ya creaste en Firestore. No concede el permiso y no crea otra cuenta.</p>
       <ol class="steps">
-        <li>Ábrela con Live Server. No la publiques.</li>
-        <li>Crea el usuario con correo y contraseña. La contraseña no se guarda en el código.</li>
-        <li>Copia el UID que aparece.</li>
-        <li>En Firebase Console, proyecto jsagency-b607c, crea el documento admins/UID. El navegador no puede crearlo.</li>
-        <li>Crea system/status con completed = true para bloquear esta pantalla.</li>
+        <li>Ábrela con un servidor local. No la abras como archivo ni la publiques.</li>
+        <li>Entra con el correo del administrador. La contraseña no se guarda en el código.</li>
+        <li>Comprueba que el UID coincida con el documento admins/UID de la base (default).</li>
+        <li>Ese documento debe tener el campo active como booleano en true. Esta página no puede escribirlo.</li>
+        <li>Pulsa Ya autoricé este UID. Si la comprobación es válida, irás a admin.html.</li>
       </ol>
       <p id="setup-note" class="muted"></p>
-      <form id="setup-form" class="grid" method="post" autocomplete="off">
+      <p id="setup-error" class="bad" role="alert"></p>
+      <form id="setup-login" class="grid" method="post" autocomplete="on">
         <label>Correo
-          <input id="setup-email" name="email" type="email" autocomplete="off" required maxlength="120">
+          <input id="setup-login-email" name="email" type="email" autocomplete="username" required maxlength="120">
         </label>
         <label>Contraseña
-          <input id="setup-password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+          <input id="setup-login-password" name="password" type="password" autocomplete="current-password" required maxlength="128">
+        </label>
+        <button class="btn" id="setup-login-submit" type="submit" disabled>Entrar y verificar</button>
+      </form>
+      <p><a id="setup-panel" href="admin.html">Ir al panel</a></p>
+      <form id="setup-form" class="grid" method="post" autocomplete="off" hidden>
+        <p class="muted">El administrador ya existe. Este formulario no crea otra cuenta.</p>
+        <label>Correo
+          <input id="setup-email" name="email" type="email" autocomplete="off" maxlength="120">
+        </label>
+        <label>Contraseña
+          <input id="setup-password" name="password" type="password" autocomplete="new-password" minlength="8" maxlength="128">
         </label>
         <label>Repite la contraseña
-          <input id="setup-password-2" name="password2" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+          <input id="setup-password-2" name="password2" type="password" autocomplete="new-password" minlength="8" maxlength="128">
         </label>
-        <p class="muted">No hay secreto en esta página. Crear la cuenta no la vuelve administradora.</p>
-        <p id="setup-error" class="bad" role="alert"></p>
         <button class="btn" id="setup-submit" type="submit">Crear cuenta</button>
       </form>
       <div id="setup-result" class="result" hidden></div>

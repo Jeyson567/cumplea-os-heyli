@@ -8,6 +8,7 @@ import {
   writeBatch
 } from './firebase-config.js'
 import { generateToken } from './token.js'
+import { adminIsActive } from './access.js'
 import {
   evaluateCheckIn,
   evaluateRsvp,
@@ -74,9 +75,14 @@ export function publicInvitation(id, data = {}) {
   }
 }
 
-export async function userIsAdmin(db, uid) {
+export async function readAdminAccess(db, uid) {
   const snap = await getDoc(doc(db, 'admins', uid))
-  return snap.exists()
+  if (!snap.exists()) return 'missing'
+  return adminIsActive(snap.data()) ? 'active' : 'inactive'
+}
+
+export async function userIsAdmin(db, uid) {
+  return (await readAdminAccess(db, uid)) === 'active'
 }
 
 export async function loadInvitation(db, token) {

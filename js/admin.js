@@ -23,8 +23,9 @@ import {
   setInvitationActive,
   settingsFromDoc,
   updateInvitation,
-  userIsAdmin
+  readAdminAccess
 } from './records.js'
+import { describeFailure } from './access.js'
 import { makeQrSvg } from './qr.js'
 import { createScanner } from './scan.js'
 import { formatInZone, formatLongDate, formatStamp, formatTimeLabel, zonedTimeToUtc } from './time.js'
@@ -58,13 +59,7 @@ function normalize(value) {
 }
 
 function authMessage(error) {
-  const code = error?.code || ''
-  if (['auth/invalid-credential', 'auth/wrong-password', 'auth/user-not-found', 'auth/invalid-email'].includes(code)) {
-    return 'Correo o contraseña incorrectos.'
-  }
-  if (code === 'auth/too-many-requests') return 'Demasiados intentos. Espera un momento.'
-  if (code === 'auth/network-request-failed') return 'No hay conexión con el servicio de acceso.'
-  return 'No se pudo iniciar sesión.'
+  return describeFailure(error, 'No se pudo iniciar sesión.')
 }
 
 function percent(part, total) {
@@ -193,7 +188,7 @@ async function run(button, work) {
   try {
     await work()
   } catch (error) {
-    toast(error.message || 'No se pudo completar la operación.', 'bad')
+    toast(describeFailure(error, 'No se pudo completar la operación.'), 'bad')
   } finally {
     button.disabled = false
     button.dataset.busy = '0'
@@ -505,7 +500,7 @@ function bindSettings() {
       state.settingsDirty = false
       document.getElementById('settings-status').textContent = 'Cambios guardados.'
       toast('Configuración guardada.')
-    }).catch(() => {})
+    })
   })
 }
 
@@ -681,9 +676,13 @@ async function showApp(user) {
   subscribe()
 }
 
-function showDenied(user) {
+function showDenied(user, reason) {
   clearSubs()
   document.getElementById('denied-email').textContent = user.email || ''
+  const copy = document.getElementById('denied-copy')
+  copy.textContent = reason === 'inactive'
+    ? `El documento admins/${user.uid} existe, pero el campo active no es true. El panel no puede cambiarlo. En Firebase Console, base (default), pon active como booleano en true.`
+    : `No existe admins/${user.uid} con permiso activo. El panel no puede crear ese documento. Créalo en Firebase Console, base (default), y no desde esta pantalla.`
   show('view-denied')
 }
 
@@ -720,19 +719,23 @@ async function main() {
       return
     }
     try {
-      const allowed = await userIsAdmin(state.db, user.uid)
-      if (!allowed) {
-        showDenied(user)
+      const access = await readAdminAccess(state.db, user.uid)
+      if (access !== 'active') {
+        showDenied(user, access)
         return
       }
       await showApp(user)
     } catch (error) {
-      if (error.code === 'auth/network-request-failed' || error.code === 'unavailable') {
+      const code = String(error?.code || '')
+      if (code === 'auth/network-request-failed' || code === 'unavailable' || code.endsWith('/unavailable')) {
         showLogin('No hay conexión para comprobar el permiso de administrador.')
         return
       }
-      await signOut(state.auth).catch(() => {})
-      showLogin('Tu sesión ya no es válida. Entra de nuevo.')
+      if (code === 'permission-denied' || code.endsWith('/permission-denied')) {
+        showLogin(describeFailure(error, 'Firestore rechazó la lectura del permiso de administrador.'))
+        return
+      }
+      showLogin(describeFailure(error, 'No se pudo comprobar la sesión.'))
     }
   })
 }

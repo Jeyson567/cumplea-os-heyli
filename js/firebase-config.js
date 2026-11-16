@@ -40,7 +40,8 @@ let started = null
 async function startFirebase() {
   const app = initializeApp(firebaseConfig)
   const auth = getAuth(app)
-  const db = getFirestore(app)
+  // En este proyecto la base se llama default. La base automática (default) no existe.
+  const db = getFirestore(app, 'default')
   if (shouldUseEmulators()) {
     connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true })
     connectFirestoreEmulator(db, '127.0.0.1', 8080)

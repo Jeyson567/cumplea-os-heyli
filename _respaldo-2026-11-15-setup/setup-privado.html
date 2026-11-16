@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Instalación privada · XV de Heyli</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&family=Outfit:wght@380;520&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="stylesheet" href="css/setup.css">
+</head>
+<body>
+  <main class="wrap">
+    <section class="gate panel">
+      <p class="eyebrow">Instalación de un solo uso</p>
+      <h1>Primer administrador</h1>
+      <p>Esta pantalla solo crea la cuenta en Firebase Authentication y muestra su UID. No concede el permiso. No está enlazada desde la invitación ni desde el panel.</p>
+      <ol class="steps">
+        <li>Ábrela con Live Server. No la publiques.</li>
+        <li>Crea el usuario con correo y contraseña. La contraseña no se guarda en el código.</li>
+        <li>Copia el UID que aparece.</li>
+        <li>En Firebase Console, proyecto jsagency-b607c, crea el documento admins/UID. El navegador no puede crearlo.</li>
+        <li>Crea system/status con completed = true para bloquear esta pantalla.</li>
+      </ol>
+      <p id="setup-note" class="muted"></p>
+      <form id="setup-form" class="grid" method="post" autocomplete="off">
+        <label>Correo
+          <input id="setup-email" name="email" type="email" autocomplete="off" required maxlength="120">
+        </label>
+        <label>Contraseña
+          <input id="setup-password" name="password" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+        </label>
+        <label>Repite la contraseña
+          <input id="setup-password-2" name="password2" type="password" autocomplete="new-password" required minlength="8" maxlength="128">
+        </label>
+        <p class="muted">No hay secreto en esta página. Crear la cuenta no la vuelve administradora.</p>
+        <p id="setup-error" class="bad" role="alert"></p>
+        <button class="btn" id="setup-submit" type="submit">Crear cuenta</button>
+      </form>
+      <div id="setup-result" class="result" hidden></div>
+    </section>
+  </main>
+  <script type="module" src="js/setup.js"></script>
+</body>
+</html>
