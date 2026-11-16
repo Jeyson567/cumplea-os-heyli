@@ -23,7 +23,7 @@ No hay contraseña incluida en el código. No se creó un administrador por defe
 
 - Un navegador y la extensión Live Server para la instalación.
 - Firebase CLI, vía `npx firebase-tools`, solo cuando autorices publicar reglas o la web.
-- Proyecto `cumpleheyli`, el que está en `.firebaserc`.
+- Proyecto `jsagency-b607c`, el que está en `.firebaserc`. La invitación sigue publicada en GitHub Pages, no en Firebase Hosting.
 - Plan Spark. No hace falta Blaze.
 
 ## Probar la invitación sin tocar producción
@@ -34,7 +34,7 @@ npm test
 npx --yes serve -l 5173 .
 ```
 
-Abre `http://127.0.0.1:5173/`. Sin `?emuladores=1`, la página usa el proyecto real `cumpleheyli`. Con ese parámetro, en localhost, Auth y Firestore apuntan a los emuladores. La invitación se ve con los datos base aunque Firestore todavía no tenga configuración.
+Abre `http://127.0.0.1:5173/`. Sin `?emuladores=1`, la página usa el proyecto real `jsagency-b607c`. Con ese parámetro, en localhost, Auth y Firestore apuntan a los emuladores. La invitación se ve con los datos base aunque Firestore todavía no tenga configuración.
 
 El panel, en las mismas condiciones: `http://127.0.0.1:5173/admin.html?emuladores=1`.
 
@@ -61,7 +61,7 @@ Si el audio falla, la invitación sigue abriéndose. Spotify puede pedir otro to
 
 `setup-privado.html` no aparece en la invitación ni en el panel. Firebase Hosting lo ignora y `_config.yml` lo excluye de GitHub Pages. Ocultarlo no otorga el permiso. El permiso existe solo cuando el documento `admins/{uid}` está en Firestore, y las reglas rechazan cualquier intento del navegador de crearlo.
 
-1. Firebase Console, proyecto `cumpleheyli`, Authentication, método de acceso, activa **Correo/contraseña**.
+1. Firebase Console, proyecto `jsagency-b607c`, Authentication, método de acceso, activa **Correo/contraseña**. En dominios autorizados incluye `jeyson567.github.io`.
 2. En VS Code, abre esta carpeta con Live Server sobre `setup-privado.html`. No uses `file://` ni `?emuladores=1` si la cuenta debe quedar en el proyecto real.
 3. Escribe correo y contraseña, de 8 a 128 caracteres. La página crea el usuario y muestra el UID. La contraseña no se escribe en el código ni en Firestore.
 4. En Firestore, pulsa **Iniciar colección**. ID de colección: `admins`. ID del documento: el UID copiado, carácter por carácter. Añade un campo `active` de tipo booleano en `true`. Guarda.
@@ -94,7 +94,7 @@ Cuando autorices publicar las reglas, sin desplegar funciones:
 
 ```powershell
 cd "C:\Users\tubom\Downloads\cumpleaños heyli"
-npx firebase-tools deploy --only firestore:rules --project cumpleheyli
+npx firebase-tools deploy --only firestore:rules,firestore:indexes --project jsagency-b607c
 ```
 
 Eso no borra documentos existentes. No lances este comando hasta querer aplicarlo al proyecto real.
@@ -103,15 +103,13 @@ La carpeta `functions/` conserva el diseño anterior y no forma parte del despli
 
 ## Hosting
 
-Cuando autorices publicar la web:
+La invitación permanece en GitHub Pages:
 
-```powershell
-npx firebase-tools deploy --only hosting --project cumpleheyli
-```
+`https://jeyson567.github.io/cumplea-os-heyli/`
 
-La invitación quedará en `https://cumpleheyli.web.app/` y el panel en `https://cumpleheyli.web.app/admin.html`. En el campo “Dirección pública” del panel conviene guardar `https://cumpleheyli.web.app` para que los enlaces de WhatsApp usen ese dominio.
+El panel está en `https://jeyson567.github.io/cumplea-os-heyli/admin`. Los enlaces de cada invitación se arman desde esa dirección y quedan en `https://jeyson567.github.io/cumplea-os-heyli/?invitacion=TOKEN`. No uses `jsagency-b607c.web.app` para esos enlaces y no publiques este sitio con Firebase Hosting.
 
-También puedes servir los archivos estáticos con GitHub Pages. Las confirmaciones siguen yendo a Firestore del proyecto `cumpleheyli`. `setup-privado.html` no debe subirse.
+Las confirmaciones van a Firestore del proyecto `jsagency-b607c`. `setup-privado.html` no debe subirse.
 
 ## App Check
 
@@ -125,7 +123,7 @@ Instala Java 21 o superior y luego:
 cd "C:\Users\tubom\Downloads\cumpleaños heyli"
 $env:FIRESTORE_EMULATOR_HOST = "127.0.0.1:8080"
 $env:FIREBASE_AUTH_EMULATOR_HOST = "127.0.0.1:9099"
-npx firebase-tools emulators:start --project cumpleheyli
+npx firebase-tools emulators:start --project jsagency-b607c
 ```
 
 En otra terminal, solo si esas dos variables apuntan a localhost:

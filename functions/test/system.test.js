@@ -312,6 +312,17 @@ test('un fallo de instalación dice qué función y qué dirección fallaron', (
   assert.match(secret, /functions\/permission-denied/)
 })
 
+test('el cliente apunta a jsagency y los enlaces no usan su hosting', () => {
+  const config = fs.readFileSync(new URL('js/firebase-config.js', root), 'utf8')
+  const links = fs.readFileSync(new URL('js/links.js', root), 'utf8')
+  assert.match(config, /projectId: 'jsagency-b607c'/)
+  assert.match(config, /authDomain: 'jsagency-b607c\.firebaseapp\.com'/)
+  assert.equal(config.includes('cumpleheyli'), false)
+  assert.equal(config.includes('.web.app'), false)
+  assert.equal(links.includes('.web.app'), false)
+  assert.equal(links.includes('jsagency'), false)
+})
+
 test('la galería usa el manifiesto y las fotografías que están en la carpeta', () => {
   const gallery = fs.readFileSync(new URL('js/gallery-config.js', root), 'utf8')
   const manifest = JSON.parse(fs.readFileSync(new URL('media/gallery.json', root), 'utf8'))

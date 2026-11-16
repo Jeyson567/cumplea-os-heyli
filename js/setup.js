@@ -62,7 +62,7 @@ function showAuthorization(user) {
   resultNode.replaceChildren(
     line('La cuenta ya existe en Firebase Authentication. Todavía no es administradora.', 'ok'),
     line(`UID: ${user.uid}`),
-    line('Copia ese UID. En Firebase Console, proyecto cumpleheyli, abre Firestore y crea el documento admins/' + user.uid + '. Puedes añadir el campo active con el valor true. Las reglas no dejan que esta página lo cree.'),
+    line('Copia ese UID. En Firebase Console, proyecto jsagency-b607c, abre Firestore y crea el documento admins/' + user.uid + '. Puedes añadir el campo active con el valor true. Las reglas no dejan que esta página lo cree.'),
     line('Para bloquear esta pantalla, crea también system/status con el campo completed en true (booleano). Ese documento tampoco puede escribirlo el navegador.'),
     line('Cuando el documento de admins exista, pulsa el botón. Luego entra por admin.html.'),
     line('El plan Spark no puede desactivar por completo el registro público de Authentication. Una cuenta nueva no administra nada: solo el documento creado a mano en admins otorga permiso.'),

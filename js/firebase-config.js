@@ -24,12 +24,12 @@ import {
 
 /** Identificadores públicos del cliente. La autorización real está en Firestore Rules. */
 export const firebaseConfig = {
-  apiKey: 'AIzaSyBXNIw6Sut8vAsZCGk9HeHcZI1CQ7eKpu8',
-  authDomain: 'cumpleheyli.firebaseapp.com',
-  projectId: 'cumpleheyli',
-  storageBucket: 'cumpleheyli.firebasestorage.app',
-  messagingSenderId: '257718111572',
-  appId: '1:257718111572:web:823abbef21b10f52934cc1'
+  apiKey: 'AIzaSyBTD6Xe6nGUrYkQWxoei92_M0zUjGHL_uM',
+  authDomain: 'jsagency-b607c.firebaseapp.com',
+  projectId: 'jsagency-b607c',
+  storageBucket: 'jsagency-b607c.firebasestorage.app',
+  messagingSenderId: '890922772238',
+  appId: '1:890922772238:web:e0b4e883f6ab440f4d195f'
 }
 
 /** Vacío hasta registrar la app en App Check. No bloquea la invitación. */
