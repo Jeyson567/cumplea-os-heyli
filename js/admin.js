@@ -213,7 +213,7 @@ function openModal(title, body) {
 }
 
 function showLink(guest, token, stored) {
-  const url = invitationUrl(token, state.settings)
+  const url = invitationUrl(token)
   const when = `${formatLongDate(state.settings.eventDate, state.settings.timezone)} · ${formatTimeLabel(state.settings.eventTime)}`
   const message = fillTemplate(state.settings.whatsappTemplate || eventDefaults.whatsappTemplate, {
     nombre: guest.name,

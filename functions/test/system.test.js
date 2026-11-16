@@ -18,6 +18,7 @@ import { csvCell, toCsv } from '../../js/csv.js'
 import { invitationUrl, tokenFromScan, whatsappShareUrl } from '../../js/links.js'
 import { countdownParts, formatLongDate, formatTimeLabel, zonedTimeToUtc } from '../../js/time.js'
 import { qrcode } from '../../js/vendor/qrcode.mjs'
+import jsQR from '../../js/vendor/jsQR.js'
 
 const root = new URL('../../', import.meta.url)
 
@@ -155,17 +156,66 @@ test('csv y enlaces no filtran fórmulas ni arman mal el token', () => {
   assert.match(toCsv([['nombre'], ['Familia Pérez']]), /sep=;/)
   const token = 'a'.repeat(43)
   const other = 'b'.repeat(43)
-  const url = invitationUrl(token, { publicSiteUrl: 'https://cumpleheyli.web.app/admin.html' }, 'http://localhost/admin.html')
-  assert.equal(url, `https://cumpleheyli.web.app/index.html?invitacion=${token}`)
-  assert.equal(url.includes('admin.html'), false)
-  assert.equal(invitationUrl(other, { publicSiteUrl: 'https://cumpleheyli.web.app' }), `https://cumpleheyli.web.app/index.html?invitacion=${other}`)
-  assert.equal(invitationUrl(token, {}, 'http://127.0.0.1:5173/admin.html'), `http://127.0.0.1:5173/index.html?invitacion=${token}`)
-  assert.equal(invitationUrl(token, {}, 'https://cumpleheyli.web.app/admin.html'), `https://cumpleheyli.web.app/index.html?invitacion=${token}`)
-  assert.equal(tokenFromScan(url), token)
+  const previous = globalThis.location
+  const at = (href) => {
+    const page = new URL(href)
+    globalThis.location = { origin: page.origin, pathname: page.pathname, href: `${page.href}&arrastrado=admin.html` }
+  }
+  try {
+    at('https://midominio.com/admin.html')
+    const rootUrl = invitationUrl(token)
+    at('https://midominio.com/cumple/admin.html')
+    const folderUrl = invitationUrl(token)
+    at('http://127.0.0.1:5500/admin.html')
+    const localUrl = invitationUrl(other)
+    assert.equal(rootUrl, `https://midominio.com/index.html?invitacion=${token}`)
+    assert.equal(folderUrl, `https://midominio.com/cumple/index.html?invitacion=${token}`)
+    assert.equal(localUrl, `http://127.0.0.1:5500/index.html?invitacion=${other}`)
+    for (const url of [rootUrl, folderUrl, localUrl]) {
+      assert.equal(url.includes('admin.html'), false)
+      assert.equal(readInvitationQr(url), url)
+    }
+    assert.equal(tokenFromScan(rootUrl), token)
+    assert.equal(tokenFromScan(folderUrl), token)
+    assert.equal(tokenFromScan(localUrl), other)
+    const adminSource = fs.readFileSync(new URL('js/admin.js', root), 'utf8')
+    assert.match(adminSource, /const url = invitationUrl\(token\)/)
+    assert.match(adminSource, /value: url/)
+    assert.match(adminSource, /copyText\(url\)/)
+    assert.match(adminSource, /enlace: url/)
+    assert.match(adminSource, /makeQrSvg\(url\)/)
+  } finally {
+    globalThis.location = previous
+  }
   assert.equal(tokenFromScan(`https://cumpleheyli.web.app/index.html?invitacion=${other}`), other)
   assert.equal(tokenFromScan('no-es-token'), null)
   assert.match(whatsappShareUrl({ phone: '+502 5555-5555', message: 'Hola' }), /^https:\/\/wa\.me\/50255555555\?text=/)
 })
+
+function readInvitationQr(text) {
+  const qr = qrcode(0, 'M')
+  qr.addData(text)
+  qr.make()
+  const count = qr.getModuleCount()
+  const scale = 8
+  const margin = 2
+  const size = (count + margin * 2) * scale
+  const data = new Uint8ClampedArray(size * size * 4)
+  for (let y = 0; y < size; y += 1) {
+    for (let x = 0; x < size; x += 1) {
+      const mx = Math.floor(x / scale) - margin
+      const my = Math.floor(y / scale) - margin
+      const dark = mx >= 0 && my >= 0 && mx < count && my < count && qr.isDark(my, mx)
+      const index = (y * size + x) * 4
+      const color = dark ? 0 : 255
+      data[index] = color
+      data[index + 1] = color
+      data[index + 2] = color
+      data[index + 3] = 255
+    }
+  }
+  return jsQR(data, size, size)?.data
+}
 
 test('el código QR cabe un enlace individual', () => {
   const qr = qrcode(0, 'M')
