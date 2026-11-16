@@ -1,20 +1,24 @@
 import { isTokenShape } from './policy.js'
 
-function projectBasePath(pathname) {
-  const path = String(pathname || '/')
-  const segments = (path.startsWith('/') ? path : `/${path}`).split('/')
-  const last = segments[segments.length - 1]
-  if (last && /\.html?$/i.test(last)) segments.pop()
-  const directory = segments.join('/')
-  return directory.endsWith('/') ? directory : `${directory}/`
+function isAdminSegment(segment) {
+  return /^admin(?:\.html?)?$/i.test(String(segment || ''))
 }
 
-/** Enlace público de una invitación, en el mismo dominio y carpeta del panel. */
+function projectBasePath(pathname) {
+  const segments = String(pathname || '/').split('/').filter(Boolean)
+  const last = segments[segments.length - 1] || ''
+  if (/^index\.html?$/i.test(last) && isAdminSegment(segments[segments.length - 2])) {
+    segments.splice(-2, 2)
+  } else if (isAdminSegment(last)) {
+    segments.pop()
+  }
+  return segments.length ? `/${segments.join('/')}/` : '/'
+}
+
+/** Enlace público de una invitación, en el origen y la carpeta del proyecto. */
 export function invitationUrl(token) {
-  const location = globalThis.location
-  const origin = location.origin
-  const base = projectBasePath(location.pathname)
-  return `${origin}${base}index.html?invitacion=${encodeURIComponent(token)}`
+  const { origin, pathname } = globalThis.location
+  return `${origin}${projectBasePath(pathname)}?invitacion=${encodeURIComponent(token)}`
 }
 
 export function fillTemplate(template, vars) {
