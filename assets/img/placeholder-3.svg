@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#F6F1EA"/>
+  <rect x="170" y="300" width="460" height="300" rx="12" fill="#F3E6D4" stroke="#A68556"/>
+  <path d="M170 300l230 150 230-150" fill="none" stroke="#C9898B" stroke-width="3"/>
+  <circle cx="400" cy="430" r="36" fill="#A68556"/>
+  <text x="400" y="440" text-anchor="middle" font-family="Georgia" font-size="22" fill="#FFF8F1">XV</text>
+  <text x="400" y="760" text-anchor="middle" font-family="Georgia" font-size="32" fill="#8D4F55">Imagen temporal</text>
+</svg>

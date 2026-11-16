@@ -1,0 +1,11 @@
+node_modules/
+functions/node_modules/
+.firebase/
+*.log
+.env
+functions/.env
+functions/.secret.local
+serviceAccount*.json
+*credentials*.json
+*.tgz
+.DS_Store

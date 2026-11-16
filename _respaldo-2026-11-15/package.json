@@ -1,0 +1,11 @@
+{
+  "name": "invitacion-heyli",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test functions/test",
+    "serve": "npx --yes serve -l 5173 .",
+    "emulators": "npx --yes firebase-tools emulators:start",
+    "seed:emulator": "node functions/scripts/seed-emulator.js"
+  }
+}

@@ -1,0 +1,152 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    function eventPath() {
+      return /databases/$(database)/documents/eventSettings/public;
+    }
+
+    function rsvpWindowOpen() {
+      return !exists(eventPath())
+        || (
+          (!('rsvpOpen' in get(eventPath()).data) || get(eventPath()).data.rsvpOpen == true)
+          && (!('rsvpDeadlineAt' in get(eventPath()).data) || get(eventPath()).data.rsvpDeadlineAt > request.time)
+        );
+    }
+
+    function seatsOk(data) {
+      return data.maxSeats is int
+        && data.maxSeats >= 1
+        && data.maxSeats <= 25
+        && data.confirmedCount is int
+        && data.confirmedCount >= 0
+        && data.confirmedCount <= data.maxSeats
+        && data.checkedInCount is int
+        && data.checkedInCount >= 0
+        && data.checkedInCount <= data.confirmedCount
+        && data.status in ['pendiente', 'confirmado', 'rechazado']
+        && (data.status != 'rechazado' || data.confirmedCount == 0)
+        && (data.status != 'confirmado' || data.confirmedCount >= 1)
+        && (data.status != 'pendiente' || data.confirmedCount == 0)
+        && data.active is bool
+        && data.name is string
+        && data.name.size() >= 2
+        && data.name.size() <= 80;
+    }
+
+    function guestUpdate() {
+      return resource.data.active == true
+        && rsvpWindowOpen()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status', 'confirmedCount', 'respondedAt', 'updatedAt'])
+        && request.resource.data.name == resource.data.name
+        && request.resource.data.maxSeats == resource.data.maxSeats
+        && request.resource.data.active == resource.data.active
+        && request.resource.data.checkedInCount == resource.data.checkedInCount
+        && seatsOk(request.resource.data);
+    }
+
+    function adminUpdate() {
+      return seatsOk(request.resource.data);
+    }
+
+    function validCreate(invitationId) {
+      return invitationId.matches('^[A-Za-z0-9_-]{43}$')
+        && request.resource.data.active == true
+        && seatsOk(request.resource.data);
+    }
+
+    match /admins/{uid} {
+      allow get: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    match /system/{docId} {
+      allow get: if docId == 'status';
+      allow list: if false;
+      allow update, delete: if false;
+      allow create: if signedIn()
+        && docId == 'bootstrap'
+        && request.resource.data.keys().hasOnly(['pendingUid', 'createdAt'])
+        && request.resource.data.pendingUid == request.auth.uid
+        && request.resource.data.pendingUid is string
+        && request.resource.data.pendingUid.size() > 10
+        && request.resource.data.pendingUid.size() < 200;
+    }
+
+    match /eventSettings/{docId} {
+      allow get: if docId == 'public';
+      allow list: if false;
+      allow create, update: if isAdmin() && docId == 'public';
+      allow delete: if false;
+    }
+
+    match /invitations/{invitationId} {
+      allow get: if isAdmin() || resource.data.active == true;
+      allow list: if isAdmin();
+      allow create: if isAdmin() && validCreate(invitationId);
+      allow update: if (isAdmin() && adminUpdate()) || (!isAdmin() && guestUpdate());
+      allow delete: if false;
+
+      match /private/{docId} {
+        allow get, list: if isAdmin();
+        allow create, update: if isAdmin() && docId == 'profile'
+          && request.resource.data.keys().hasOnly(['phone', 'notes'])
+          && request.resource.data.phone is string
+          && request.resource.data.phone.size() <= 24
+          && request.resource.data.notes is string
+          && request.resource.data.notes.size() <= 500;
+        allow delete: if false;
+      }
+
+      match /secret/{docId} {
+        allow read, write: if false;
+      }
+
+      match /ops/{docId} {
+        allow read, write: if false;
+      }
+    }
+
+    match /auditLogs/{logId} {
+      allow get, list: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly(['action', 'summary', 'actor', 'invitationId', 'at'])
+        && request.resource.data.action is string
+        && request.resource.data.action.size() > 0
+        && request.resource.data.action.size() <= 40
+        && request.resource.data.summary is string
+        && request.resource.data.summary.size() > 0
+        && request.resource.data.summary.size() <= 300
+        && request.resource.data.actor is string
+        && request.resource.data.actor.size() <= 120
+        && request.resource.data.invitationId is string
+        && request.resource.data.invitationId.size() <= 80;
+      allow update, delete: if false;
+    }
+
+    match /tokenIndex/{docId} {
+      allow read, write: if false;
+    }
+
+    match /rateLimits/{docId} {
+      allow read, write: if false;
+    }
+
+    match /createOps/{docId} {
+      allow read, write: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

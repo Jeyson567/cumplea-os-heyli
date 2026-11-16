@@ -1,0 +1,12 @@
+{
+  "name": "XV años de Heily Pérez Orrego",
+  "short_name": "Heily XV",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#F9EDEB",
+  "theme_color": "#F9EDEB",
+  "lang": "es",
+  "icons": [
+    { "src": "assets/img/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000">
+  <rect width="800" height="1000" fill="#F7F2EB"/>
+  <path d="M160 780c80-180 140-260 240-420 70 120 130 210 240 420" fill="none" stroke="#C9898B" stroke-width="3"/>
+  <path d="M400 360c-30-70-20-120 10-170 30 50 40 100 10 170z" fill="none" stroke="#6F5434" stroke-width="2"/>
+  <path d="M300 640h200M340 700h120" stroke="#A68556"/>
+  <text x="400" y="880" text-anchor="middle" font-family="Georgia" font-size="32" fill="#8D4F55">Imagen temporal</text>
+</svg>

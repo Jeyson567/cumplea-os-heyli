@@ -1,0 +1,12 @@
+# GitHub Pages procesa el sitio con Jekyll y omite la instalación privada.
+exclude:
+  - setup-privado.html
+  - js/setup.js
+  - css/setup.css
+  - functions
+  - node_modules
+  - firebase.json
+  - firestore.rules
+  - firestore.indexes.json
+  - README.md
+  - _respaldo-codigo

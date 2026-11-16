@@ -1,0 +1,7 @@
+.gate { width: min(100%, 34rem); }
+.steps { margin: 0; padding-left: 1.1rem; color: var(--ink-soft); }
+.steps li + li { margin-top: 0.35rem; }
+.result { display: grid; gap: 0.35rem; margin-top: 1rem; }
+.result p { margin: 0; }
+.ok { color: #2f5d45; }
+form[aria-disabled="true"] { opacity: 0.72; }

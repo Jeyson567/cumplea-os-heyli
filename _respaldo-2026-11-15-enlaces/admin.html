@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Panel · XV de Heily</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+  <div class="wrap">
+    <section id="view-checking" class="gate">
+      <p class="eyebrow">Panel</p>
+      <h1>Comprobando sesión…</h1>
+    </section>
+    <section id="view-login" class="gate" hidden>
+      <p class="eyebrow">XV años</p>
+      <h1>Entrar al panel</h1>
+      <p class="muted">Solo una cuenta con permiso de administrador puede continuar.</p>
+      <form id="login-form" class="grid" method="post">
+        <label>Correo
+          <input id="login-email" name="email" type="email" autocomplete="username" required maxlength="120">
+        </label>
+        <label>Contraseña
+          <input id="login-password" name="password" type="password" autocomplete="current-password" required maxlength="200">
+        </label>
+        <p id="login-error" class="bad" role="alert"></p>
+        <button class="btn" type="submit">Entrar</button>
+      </form>
+    </section>
+    <section id="view-denied" class="gate" hidden>
+      <p class="eyebrow">Sin permiso</p>
+      <h1>Esta cuenta no administra la celebración</h1>
+      <p id="denied-email"></p>
+      <p class="muted">Esta cuenta no está en la colección admins. El permiso solo se otorga creando ese documento en Firebase Console. No se puede activar desde esta pantalla.</p>
+      <button class="btn" id="denied-logout" type="button">Cerrar sesión</button>
+    </section>
+    <section id="view-app" hidden>
+      <header class="topbar">
+        <div>
+          <p class="eyebrow">Celebración</p>
+          <h1>Panel de Heily</h1>
+        </div>
+        <div class="actions">
+          <span id="admin-email" class="muted"></span>
+          <button class="btn btn--ghost" id="logout" type="button">Cerrar sesión</button>
+        </div>
+      </header>
+      <nav class="tabs" aria-label="Secciones">
+        <button type="button" data-tab="resumen" aria-selected="true">Resumen</button>
+        <button type="button" data-tab="invitados">Invitados</button>
+        <button type="button" data-tab="evento">Evento</button>
+        <button type="button" data-tab="acceso">Acceso</button>
+      </nav>
+      <section id="tab-resumen">
+        <div class="stats">
+          <article class="stat"><strong id="stat-issued">0</strong><span>Invitaciones emitidas</span></article>
+          <article class="stat"><strong id="stat-pending">0</strong><span>Pendientes</span></article>
+          <article class="stat"><strong id="stat-confirmed">0</strong><span>Confirmadas</span></article>
+          <article class="stat"><strong id="stat-declined">0</strong><span>Rechazadas</span></article>
+          <article class="stat"><strong id="stat-authorized">0</strong><span>Personas autorizadas</span></article>
+          <article class="stat"><strong id="stat-people">0</strong><span>Personas confirmadas</span></article>
+          <article class="stat"><strong id="stat-open">0</strong><span>Cupos aún no confirmados</span></article>
+          <article class="stat"><strong id="stat-checked">0</strong><span>Registrados en entrada</span></article>
+        </div>
+        <p class="muted" id="stat-inactive"></p>
+        <div class="panel chart">
+          <div class="donut" id="donut" role="img" aria-label="Distribución de respuestas"></div>
+          <ul class="legend" id="legend"></ul>
+        </div>
+      </section>
+      <section id="tab-invitados" hidden>
+        <div class="toolbar">
+          <button class="btn" id="new-guest" type="button">Nueva invitación</button>
+          <button class="btn btn--ghost" id="export-btn" type="button">Exportar CSV</button>
+          <button class="btn btn--ghost" id="print-btn" type="button">Imprimir</button>
+          <button class="btn btn--ghost" id="deactivate-btn" type="button">Desactivar selección</button>
+        </div>
+        <div class="toolbar">
+          <input id="guest-search" type="search" placeholder="Buscar por nombre" aria-label="Buscar por nombre">
+          <select id="guest-filter" aria-label="Filtrar por estado">
+            <option value="activas">Activas</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="confirmado">Confirmadas</option>
+            <option value="rechazado">Rechazadas</option>
+            <option value="desactivadas">Desactivadas</option>
+            <option value="todas">Todas</option>
+          </select>
+          <select id="guest-sort" aria-label="Ordenar">
+            <option value="createdAt">Más recientes</option>
+            <option value="name">Nombre</option>
+            <option value="status">Estado</option>
+            <option value="maxSeats">Cupos</option>
+            <option value="confirmedCount">Confirmados</option>
+          </select>
+        </div>
+        <label class="check"><input id="select-all" type="checkbox"> Seleccionar visibles</label>
+        <p id="guest-count" class="muted"></p>
+        <div class="guest-list" id="guest-list"></div>
+      </section>
+      <section id="tab-evento" hidden>
+        <form id="settings-form" class="grid">
+          <div class="grid grid--2">
+            <label>Nombre de la quinceañera <input name="quinceaneraName" required maxlength="80"></label>
+            <label>Dirección pública https <input name="publicSiteUrl" maxlength="200" placeholder="https://cumpleheyli.web.app"></label>
+            <label>Fecha <input name="eventDate" type="date" required></label>
+            <label>Hora <input name="eventTime" type="time" required></label>
+            <label>Zona horaria <input name="timezone" list="zones" required maxlength="64"></label>
+            <datalist id="zones">
+              <option value="America/Guatemala"></option>
+              <option value="America/Mexico_City"></option>
+              <option value="America/El_Salvador"></option>
+            </datalist>
+            <label>Lugar <input name="venueName" required maxlength="120"></label>
+            <label>Dirección <input name="venueAddress" maxlength="200"></label>
+          </div>
+          <label>Nota del lugar <input name="venueNote" maxlength="200"></label>
+          <label>Enlace de Google Maps <input name="mapUrl" type="url" maxlength="400"></label>
+          <label>Mensaje principal <textarea name="heroMessage" maxlength="800"></textarea></label>
+          <label>Mensaje final <textarea name="closingMessage" maxlength="500"></textarea></label>
+          <div class="grid grid--2">
+            <label>Título del regalo <input name="giftTitle" maxlength="80"></label>
+            <label>Código de vestimenta (opcional) <input name="dressCode" maxlength="200"></label>
+          </div>
+          <label>Texto de lluvia de sobres <textarea name="giftMessage" maxlength="400"></textarea></label>
+          <div class="grid grid--2">
+            <label>Límite para confirmar, fecha <input name="rsvpDate" type="date" required></label>
+            <label>Hora límite <input name="rsvpTime" type="time" required></label>
+          </div>
+          <label class="check"><input name="rsvpOpen" type="checkbox"> Confirmaciones abiertas</label>
+          <fieldset>
+            <legend>Agenda opcional</legend>
+            <div id="agenda-list"></div>
+            <button class="btn btn--ghost" id="agenda-add" type="button">Añadir momento</button>
+          </fieldset>
+          <fieldset>
+            <legend>Fotografías locales</legend>
+            <p class="muted" id="gallery-hint"></p>
+            <label class="check"><input type="radio" name="gallerySource" value="archivo" checked> Usar js/gallery-config.js</label>
+            <label class="check"><input type="radio" name="gallerySource" value="panel"> Usar esta lista</label>
+            <textarea name="galleryText" placeholder="foto.jpg | Descripción"></textarea>
+            <label>Portada (archivo en assets/img; vacío usa la primera fotografía de la galería) <input name="coverImage" maxlength="90"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Música</legend>
+            <div class="grid grid--2">
+              <label>Título <input name="musicTitle" maxlength="80"></label>
+              <label>Artista <input name="musicArtist" maxlength="80"></label>
+              <label>Archivo en assets/audio <input name="musicFile" maxlength="90" placeholder="cancion.mp3"></label>
+              <label>Búsqueda de Spotify <input name="musicSearch" type="url" maxlength="300"></label>
+            </div>
+            <label>Embed o enlace de Spotify <input name="musicEmbed" type="url" maxlength="300" placeholder="Pega un enlace real si ya lo tienes"></label>
+          </fieldset>
+          <fieldset>
+            <legend>Colores</legend>
+            <div class="colors">
+              <label>Marfil <input name="colorIvory" type="color"></label>
+              <label>Rosa <input name="colorRose" type="color"></label>
+              <label>Champagne <input name="colorChampagne" type="color"></label>
+              <label>Dorado <input name="colorGold" type="color"></label>
+              <label>Tinta <input name="colorInk" type="color"></label>
+            </div>
+          </fieldset>
+          <label>Mensaje de WhatsApp <textarea name="whatsappTemplate" maxlength="500"></textarea></label>
+          <p class="muted">Placeholders: {nombre} {quinceanera} {fecha} {enlace} {cupos}</p>
+          <div class="actions">
+            <button class="btn" type="submit">Guardar configuración</button>
+            <button class="btn btn--ghost" id="reload-settings" type="button">Recargar</button>
+          </div>
+          <p id="settings-status" class="muted" role="status"></p>
+        </form>
+      </section>
+      <section id="tab-acceso" hidden>
+        <div class="panel grid">
+          <h2>Control de entrada</h2>
+          <p class="muted">Escanea el QR del invitado o pega su enlace. El registro no puede superar las personas confirmadas.</p>
+          <video class="video" id="scan-video" playsinline muted></video>
+          <div class="actions">
+            <button class="btn" id="scan-start" type="button">Activar cámara</button>
+            <button class="btn btn--ghost" id="scan-stop" type="button">Detener</button>
+          </div>
+          <label>Enlace o código
+            <input id="scan-manual" type="text" autocomplete="off" placeholder="Pega el enlace de la invitación">
+          </label>
+          <button class="btn" id="scan-go" type="button">Consultar invitación</button>
+          <div id="scan-result"></div>
+        </div>
+      </section>
+    </section>
+  </div>
+  <dialog id="modal"></dialog>
+  <div id="toasts" aria-live="polite"></div>
+  <script type="module" src="js/admin.js"></script>
+</body>
+</html>
