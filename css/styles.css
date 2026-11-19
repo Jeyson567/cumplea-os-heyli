@@ -237,7 +237,6 @@ body.is-open #contenido { display: block; }
   object-fit: contain;
   background: #2c2422;
 }
-#film-sound { margin-top: 0.9rem; }
 .film__note {
   margin: 0;
   padding: 1.5rem 1.1rem;
@@ -248,6 +247,18 @@ body.is-open #contenido { display: block; }
   border-radius: 1.15rem;
 }
 .gallery-more { margin-top: 1rem; text-align: center; }
+.score { display: flex; justify-content: center; }
+.score:not(:has(button:not([hidden]))) { display: none; }
+.score__button {
+  min-height: 2.6rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--stone);
+  border-radius: 999px;
+  background: rgba(249, 237, 235, 0.94);
+  color: #2c2422;
+  font: 500 0.92rem/1.2 Outfit, sans-serif;
+}
+.score__button:disabled { opacity: 0.7; cursor: default; }
 .hero__line {
   margin: 0 0 0.55rem;
   font-family: var(--serif);
@@ -257,8 +268,13 @@ body.is-open #contenido { display: block; }
   color: var(--rose-deep);
 }
 .intro h1 { font-size: clamp(2.15rem, 8.5vw, 3.5rem); line-height: 0.95; max-width: 12em; margin-inline: auto; }
-.hero h1 span { display: block; }
-.hero h1 span:last-child { font-style: italic; font-weight: 500; }
+.hero h1 { line-height: 1.02; text-align: center; }
+.hero h1 span {
+  display: block;
+  font-style: normal;
+  font-weight: 500;
+  transform: none;
+}
 .hero__meta { display: flex; gap: 1rem; align-items: end; margin-top: 1rem; }
 .hero__day {
   font-family: var(--serif);
@@ -364,6 +380,16 @@ body.is-open { padding-bottom: 6.5rem; }
 .facts { text-align: left; }
 .fact strong, .venue h3 { font-family: var(--serif); font-size: 1.8rem; font-weight: 500; }
 .venue__map { width: 100%; height: 220px; border: 0; margin-top: 0.8rem; }
+#establecimiento {
+  margin: 0.2rem 0 0.35rem;
+  font-family: var(--serif);
+  font-size: 1.35rem;
+  color: var(--ink);
+}
+#direccion {
+  margin: 0.15rem 0 0;
+  color: var(--ink);
+}
 .venue__actions { display: flex; flex-wrap: wrap; gap: 0.7rem; margin-top: 0.9rem; }
 .note { color: #4a3f3b; }
 .note--bad { color: #6e2430; font-weight: 500; }
@@ -446,7 +472,7 @@ html.js .reveal.is-in { opacity: 1; transform: none; transition: opacity 0.7s ea
 }
 
 @media print {
-  .loader, .intro, .dock, .flora, .sparkles, .venue__map, .lightbox { display: none !important; }
+  .loader, .intro, .dock, .score, .flora, .sparkles, .venue__map, .lightbox { display: none !important; }
   body { background: white; overflow: visible; }
   #contenido { display: block !important; }
 }
@@ -600,11 +626,6 @@ body:not(.is-open) .petals { display: none; }
   to { transform: translateY(110vh) rotate(18deg); }
 }
 .gift { text-align: center; }
-.gift h2 {
-  font-size: clamp(1.45rem, 4.4vw, 1.9rem);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-}
 #regalo-texto {
   max-width: 30rem;
   margin: 0 auto;
@@ -661,7 +682,16 @@ body:not(.is-open) .petals { display: none; }
   z-index: 4;
 }
 @keyframes seal-open { to { transform: rotateX(188deg); } }
-.gift__sign { max-width: 36rem; margin: 0.8rem auto 0; color: #4a3f3b; }
+.gift__sign {
+  max-width: 36rem;
+  margin: 1.15rem auto 0;
+  font-family: var(--serif);
+  font-size: clamp(1.45rem, 3.2vw, 1.8rem);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  color: var(--plum);
+}
 @media print {
   .petals, .paper-envelope { display: none !important; }
 }

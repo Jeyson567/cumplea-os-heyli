@@ -15,7 +15,6 @@ const state = {
   inviteError: '',
   lookingUp: false,
   gallery: [],
-  galleryExpanded: false,
   photo: 0,
   timer: 0,
   pointerX: 0,
@@ -41,15 +40,25 @@ function text(id, value) {
 
 const PREVIOUS_COPY = {
   names: ['Heyli Orrego', 'HEYLI ORREGO'],
-  venues: ['Colinas Country Club'],
-  addresses: ['Km 223.5 carretera CITO 180, Quetzaltenango, Guatemala'],
+  venues: ['Colinas Country Club', 'Colina Country Club'],
+  maps: [
+    'https://www.google.com/maps/search/?api=1&query=Sal%C3%B3n+Los+Conquistadores+Quetzaltenango',
+    'https://www.google.com/maps/search/?api=1&query=Salón+Los+Conquistadores+Quetzaltenango',
+    'https://www.google.com/maps/search/?api=1&query=Colinas+Country+Club+Quetzaltenango'
+  ],
+  addresses: [
+    'Quetzaltenango',
+    'Referencia provisional: Km 223.5 carretera CITO 180, Quetzaltenango, Guatemala'
+  ],
   notes: ['Pendiente de verificar. La referencia del mapa es provisional.'],
   heroes: ['Hay momentos que se convierten en recuerdos para toda la vida. Hoy queremos compartir contigo uno de los más especiales: la celebración de mis XV años.'],
   closings: ['Los mejores recuerdos no se guardan solamente en fotografías, se guardan en el corazón. Espero poder compartir contigo una noche llena de alegría, magia y momentos inolvidables.'],
   giftTitles: ['Un regalo especial'],
   gifts: [
     'Tu presencia es nuestro mejor regalo. Si deseas tener un detalle especial conmigo, tendremos lluvia de sobres.',
-    'Tu presencia es el regalo más importante para mí. Si deseas tener un detalle adicional, agradeceré mucho tu cariño mediante una lluvia de sobres.\n\nCon mucho cariño, gracias por acompañarme en este día tan especial y por formar parte de un recuerdo que guardaré para siempre.'
+    'Tu presencia es el regalo más importante para mí. Si deseas tener un detalle adicional, agradeceré mucho tu cariño mediante una lluvia de sobres.\n\nCon mucho cariño, gracias por acompañarme en este día tan especial y por formar parte de un recuerdo que guardaré para siempre.',
+    'Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, agradeceré que sea en efectivo.',
+    'Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, agradeceré que sea en efectivo. Gracias.'
   ]
 }
 
@@ -64,6 +73,7 @@ function presentSettings(settings) {
     ...settings,
     quinceaneraName: preferOfficial(settings.quinceaneraName, PREVIOUS_COPY.names, eventDefaults.quinceaneraName),
     venueName: preferOfficial(settings.venueName, PREVIOUS_COPY.venues, eventDefaults.venueName),
+    mapUrl: preferOfficial(settings.mapUrl, PREVIOUS_COPY.maps, eventDefaults.mapUrl),
     venueAddress: preferOfficial(settings.venueAddress, PREVIOUS_COPY.addresses, eventDefaults.venueAddress),
     venueNote: PREVIOUS_COPY.notes.includes(String(settings.venueNote || '').trim()) ? '' : (settings.venueNote || ''),
     heroMessage: preferOfficial(settings.heroMessage, PREVIOUS_COPY.heroes, eventDefaults.heroMessage),
@@ -80,55 +90,23 @@ function nameLines(name) {
   return [parts[0], parts.slice(1).join(' ')]
 }
 
-const GALLERY_PREVIEW = 3
-let videoWanted = false
-let videoArmed = false
+const GALLERY_LIMIT = 3
+const SCORE_SRC = 'assets/audio/no-crezcas-mas-instrumental.mp3.mp3'
 
-function videoStorageKey(token) {
-  return isTokenShape(token) ? `heily-video-visto:${token}` : ''
-}
-
-function videoWasSeen(token) {
-  const key = videoStorageKey(token)
-  if (!key) return false
-  try { return localStorage.getItem(key) === '1' } catch { return false }
-}
-
-function rememberVideoStart(token) {
-  const key = videoStorageKey(token)
-  if (!key) return
-  try { localStorage.setItem(key, '1') } catch { /* el navegador no guardó la marca */ }
-}
-
-function showSoundButton(show) {
-  const button = document.getElementById('film-sound')
-  if (button) button.hidden = !show
-}
-
-function armInvitationVideo() {
-  if (!videoWanted || videoArmed) return
-  const video = document.getElementById('film')
+function playFilm(video) {
   if (!video) return
-  const token = state.token
-  if (!isTokenShape(token) || videoWasSeen(token)) return
-  videoArmed = true
+  video.muted = true
+  video.defaultMuted = true
+  video.loop = true
   video.playsInline = true
-  video.loop = false
-  video.addEventListener('playing', () => rememberVideoStart(token), { once: true })
-  const startMuted = () => {
-    video.muted = true
-    return video.play().then(() => showSoundButton(true))
-  }
-  video.muted = false
-  video.play().catch(() => startMuted().catch(() => {
-    video.muted = false
-    showSoundButton(false)
-  }))
+  video.autoplay = true
+  video.controls = false
+  const attempt = video.play()
+  if (attempt && typeof attempt.catch === 'function') attempt.catch(() => {})
 }
 
 function requestInvitationVideo() {
-  videoWanted = true
-  armInvitationVideo()
+  playFilm(document.getElementById('film'))
 }
 
 function mountVideo(file) {
@@ -155,10 +133,22 @@ function mountVideo(file) {
       if (note) note.hidden = false
     }, { once: true })
     if (note) note.hidden = true
-    armInvitationVideo()
+    video.controls = false
+    video.muted = true
+    video.loop = true
+    video.autoplay = true
+    video.playsInline = true
+    playFilm(video)
     return
   }
-  const created = el('video', { id: 'film', controls: true, playsinline: true, preload: 'metadata' })
+  const created = el('video', {
+    id: 'film',
+    autoplay: true,
+    loop: true,
+    muted: true,
+    playsinline: true,
+    preload: 'metadata'
+  })
   created.append(el('source', { src, type: src.endsWith('.webm') ? 'video/webm' : 'video/mp4' }))
   created.addEventListener('error', () => {
     created.remove()
@@ -166,33 +156,30 @@ function mountVideo(file) {
   }, { once: true })
   frame.prepend(created)
   if (note) note.hidden = true
-  armInvitationVideo()
+  playFilm(created)
 }
 
 function renderGallery() {
   const section = document.getElementById('galeria-seccion')
   const grid = document.getElementById('galeria')
-  const more = document.getElementById('galeria-mas')
   if (!section || !grid) return
-  const items = state.gallery
+  const items = state.gallery.slice(0, GALLERY_LIMIT)
   if (!items.length) {
     section.hidden = true
     grid.replaceChildren()
-    if (more) more.hidden = true
     return
   }
   section.hidden = false
-  const visible = state.galleryExpanded ? items : items.slice(0, GALLERY_PREVIEW)
-  grid.replaceChildren(...visible.map((item, index) => {
+  grid.replaceChildren(...items.map((item, index) => {
     const src = gallerySrc(item.file)
     const img = el('img', {
       alt: item.alt || 'Fotografía de la celebración',
       decoding: 'async',
-      loading: 'lazy',
+      loading: 'eager',
       src
     })
     const figure = el('figure', { class: index === 0 ? 'shot shot--feature' : 'shot' }, [
-      el('button', { type: 'button', 'aria-label': 'Ampliar fotografía', onclick: () => openPhoto(items.indexOf(item)) }, [img])
+      el('button', { type: 'button', 'aria-label': 'Ampliar fotografía', onclick: () => openPhoto(index) }, [img])
     ])
     img.addEventListener('error', () => {
       figure.remove()
@@ -201,23 +188,6 @@ function renderGallery() {
     }, { once: true })
     return figure
   }))
-  if (!more) return
-  const hiddenCount = items.length - GALLERY_PREVIEW
-  if (hiddenCount > 0 && !state.galleryExpanded) {
-    more.hidden = false
-    more.replaceChildren(el('button', {
-      type: 'button',
-      class: 'btn btn--ghost',
-      text: hiddenCount === 1 ? 'Ver la otra fotografía' : `Ver las ${items.length} fotografías`,
-      onclick: () => {
-        state.galleryExpanded = true
-        renderGallery()
-      }
-    }))
-    return
-  }
-  more.hidden = true
-  more.replaceChildren()
 }
 
 async function loadMedia() {
@@ -238,8 +208,7 @@ async function loadMedia() {
   state.gallery = manifest.images.map((item) => {
     if (typeof item === 'string') return { file: item, alt: 'Fotografía de la celebración' }
     return { file: item?.file || '', alt: item?.alt || 'Fotografía de la celebración' }
-  }).filter((item) => isSafeImageFile(item.file))
-  state.galleryExpanded = state.gallery.length <= GALLERY_PREVIEW
+  }).filter((item) => isSafeImageFile(item.file)).slice(0, GALLERY_LIMIT)
   renderGallery()
 }
 
@@ -251,7 +220,7 @@ function showPhoto(index) {
   const img = document.getElementById('foto-grande')
   img.alt = item.alt || ''
   img.src = gallerySrc(item.file)
-  text('foto-leyenda', `${item.alt || 'Fotografía'} · ${state.photo + 1} / ${items.length}`)
+  text('foto-leyenda', item.alt || 'Fotografía')
 }
 
 function openPhoto(index) {
@@ -284,15 +253,19 @@ function renderMessage() {
   text('intro-title', name)
   text('frase', state.settings.heroMessage)
   text('cierre', state.settings.closingMessage)
-  const giftParts = String(state.settings.giftMessage || '').split(/\n\n/)
+  const giftBody = String(state.settings.giftMessage || '')
+    .split(/\n\n/)[0]
+    .replace(/\s*Gracias\.?\s*$/u, '')
+    .trim()
   text('regalo-titulo', state.settings.giftTitle)
-  text('regalo-texto', giftParts[0] || '')
+  text('regalo-texto', giftBody)
   const giftSign = document.getElementById('regalo-cierre')
   if (giftSign) {
-    giftSign.textContent = giftParts.slice(1).join(' ')
-    giftSign.hidden = !giftSign.textContent
+    giftSign.textContent = 'Gracias'
+    giftSign.hidden = false
   }
   text('lugar', state.settings.venueName)
+  text('establecimiento', 'Colina Country Club')
   text('direccion', state.settings.venueAddress || '')
   const note = document.getElementById('lugar-nota')
   if (note) {
@@ -506,6 +479,7 @@ function bootEnvelope() {
     opened = true
     if (!reduceMotion) document.getElementById('envelope').classList.add('is-open')
     requestInvitationVideo()
+    requestScore()
     window.setTimeout(() => {
       document.body.classList.add('is-open')
       document.getElementById('nombre').focus()
@@ -513,31 +487,64 @@ function bootEnvelope() {
   })
 }
 
+function scoreLabel(playing) {
+  const button = document.getElementById('score-toggle')
+  if (!button) return
+  button.hidden = false
+  button.disabled = false
+  button.textContent = playing ? 'Pausar música' : 'Escuchar música'
+}
+
+function requestScore() {
+  const audio = document.getElementById('score-audio')
+  const button = document.getElementById('score-toggle')
+  if (!audio || !button) return
+  button.hidden = false
+  if (audio.error) {
+    button.disabled = true
+    button.textContent = 'Música no disponible'
+    return
+  }
+  audio.play().then(() => scoreLabel(true)).catch(() => {
+    if (audio.error) {
+      button.disabled = true
+      button.textContent = 'Música no disponible'
+      return
+    }
+    scoreLabel(false)
+  })
+}
+
+function bindScore() {
+  const audio = document.getElementById('score-audio')
+  const button = document.getElementById('score-toggle')
+  if (!audio || !button) return
+  audio.src = SCORE_SRC
+  audio.preload = 'none'
+  audio.addEventListener('error', () => {
+    if (button.hidden) return
+    button.disabled = true
+    button.textContent = 'Música no disponible'
+  })
+  button.addEventListener('click', () => {
+    if (!audio.paused) {
+      audio.pause()
+      scoreLabel(false)
+      return
+    }
+    audio.play().then(() => scoreLabel(true)).catch(() => scoreLabel(false))
+  })
+}
+
 function bindGallery() {
   const dialog = document.getElementById('lightbox')
   document.getElementById('foto-cerrar').addEventListener('click', () => dialog.close())
-  document.getElementById('foto-anterior').addEventListener('click', () => showPhoto(state.photo - 1))
-  document.getElementById('foto-siguiente').addEventListener('click', () => showPhoto(state.photo + 1))
-  dialog.addEventListener('keydown', (event) => {
-    if (event.key === 'ArrowLeft') showPhoto(state.photo - 1)
-    if (event.key === 'ArrowRight') showPhoto(state.photo + 1)
-  })
-  const figure = dialog.querySelector('figure')
-  figure.addEventListener('pointerdown', (event) => { state.pointerX = event.clientX })
-  figure.addEventListener('pointerup', (event) => {
-    const delta = event.clientX - state.pointerX
-    if (delta > 40) showPhoto(state.photo - 1)
-    if (delta < -40) showPhoto(state.photo + 1)
+  document.getElementById('film-frame')?.addEventListener('click', () => {
+    const video = document.getElementById('film')
+    if (video?.paused) playFilm(video)
   })
   document.getElementById('imprimir').addEventListener('click', () => window.print())
-  document.getElementById('film-sound')?.addEventListener('click', () => {
-    const video = document.getElementById('film')
-    if (!video) return
-    video.muted = false
-    video.volume = 1
-    showSoundButton(false)
-    if (video.paused) video.play().catch(() => {})
-  })
+  bindScore()
 }
 
 function watchSettings(db) {

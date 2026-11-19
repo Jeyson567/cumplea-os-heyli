@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#F9EDEB">
+  <meta name="description" content="Invitación a los XV años de Heily Pérez Orrego. Colina Country Club, Quetzaltenango.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="XV años de Heily Pérez Orrego">
+  <meta property="og:description" content="Colina Country Club, Quetzaltenango. Recepción a las 6:00 p. m.">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_GT">
+  <meta property="og:url" content="https://jeyson567.github.io/cumplea-os-heyli/">
+  <meta property="og:image" content="https://jeyson567.github.io/cumplea-os-heyli/assets/img/og-cover.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <title>XV años de Heily Pérez Orrego</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Event",
+    "name": "XV años de Heily Pérez Orrego",
+    "startDate": "2026-12-13T18:00:00-06:00",
+    "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+    "eventStatus": "https://schema.org/EventScheduled",
+    "location": {
+      "@type": "Place",
+      "name": "Colina Country Club",
+      "address": "Quetzaltenango, Guatemala"
+    },
+    "description": "Celebración de quince años."
+  }
+  </script>
+</head>
+<body>
+  <a class="skip" href="#contenido">Saltar al contenido</a>
+  <div class="loader" id="loader">
+    <div class="loader__mark" aria-hidden="true">H</div>
+    <p>Preparando la invitación</p>
+  </div>
+  <section class="intro" id="intro" aria-labelledby="intro-whisper">
+    <div class="flora" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="sparkles" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    <div class="intro__panel">
+      <p class="eyebrow">Quince años</p>
+      <p class="intro__whisper" id="intro-whisper">Tienes una invitación muy especial</p>
+      <div class="envelope" id="envelope" aria-hidden="true">
+        <div class="envelope__letter">H</div>
+        <div class="envelope__pocket"></div>
+        <div class="envelope__flap"></div>
+        <div class="envelope__seal">XV</div>
+      </div>
+      <h1 id="intro-title">Heily Pérez Orrego</h1>
+      <button class="btn" id="open-invite" type="button">Abrir invitación</button>
+    </div>
+  </section>
+  <div id="contenido">
+    <div class="petals" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></div>
+    <article class="sheet">
+      <header class="hero reveal">
+        <p class="eyebrow">Mis quince años</p>
+        <h1 id="nombre" tabindex="-1"><span>Heily</span><span>Pérez</span><span>Orrego</span></h1>
+        <div class="parents" id="padres">
+          <p class="parents__lead">Con la bendición de Dios y el amor de mis padres</p>
+          <p class="parents__name">Nineth Orrego</p>
+          <p class="parents__name">César Pérez</p>
+        </div>
+        <p class="lede" id="frase">Hoy elevo mi corazón a Dios en agradecimiento por la vida, por mi familia y por cada sueño que está por comenzar. Con mucha ilusión, deseo compartir contigo la alegría de mis quince años.</p>
+      </header>
+      <section class="personal" id="personal" hidden>
+        <p data-personal-for></p>
+        <p data-personal-seats></p>
+      </section>
+      <section class="section film" id="film-seccion" aria-label="Video">
+        <div class="film__frame" id="film-frame">
+          <video id="film" controls playsinline preload="metadata">
+            <source src="assets/img/HeilyPrez.mp4" type="video/mp4">
+          </video>
+        </div>
+        <p class="film__note" id="film-note" hidden>Cuando tengas el video, guárdalo en assets/img con el nombre HeilyPrez.mp4, en formato MP4, y deja ese nombre en media/gallery.json.</p>
+        <button class="btn" id="film-sound" type="button" hidden>Activar sonido</button>
+      </section>
+      <section class="section reveal" aria-labelledby="cuenta-title">
+        <h2 id="cuenta-title">Cuenta regresiva</h2>
+        <div class="count" id="countdown" aria-hidden="true">
+          <div><strong data-unit="days">--</strong><span>Días</span></div>
+          <div><strong data-unit="hours">--</strong><span>Horas</span></div>
+          <div><strong data-unit="minutes">--</strong><span>Minutos</span></div>
+          <div><strong data-unit="seconds">--</strong><span>Segundos</span></div>
+        </div>
+        <p class="sr" id="countdown-text" aria-live="polite"></p>
+        <p class="note countdown-done" id="countdown-done" hidden>La celebración es hoy.</p>
+      </section>
+      <section class="section reveal">
+        <h2>Cuándo y dónde</h2>
+        <div class="facts">
+          <div class="fact">
+            <p class="eyebrow">Fecha</p>
+            <strong id="fecha-larga">domingo, 13 de diciembre de 2026</strong>
+          </div>
+          <div class="fact">
+            <p class="eyebrow">Hora de acceso</p>
+            <strong id="hora-larga">6:00 p. m.</strong>
+          </div>
+          <div class="venue">
+            <p class="eyebrow">Lugar</p>
+            <h3 id="lugar">Colina Country Club</h3>
+            <p id="direccion">Quetzaltenango</p>
+            <p class="note" id="lugar-nota" hidden></p>
+            <div class="venue__actions">
+              <a class="btn" id="como-llegar" href="https://www.google.com/maps/search/?api=1&query=Colina+Country+Club+Quetzaltenango" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
+            </div>
+            <iframe class="venue__map" id="mapa" title="Mapa de Colina Country Club" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://maps.google.com/maps?q=Colina+Country+Club+Quetzaltenango&z=15&output=embed"></iframe>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="galeria-seccion" hidden>
+        <h2>Galería</h2>
+        <div class="editorial" id="galeria"></div>
+        <div class="gallery-more" id="galeria-mas" hidden></div>
+      </section>
+      <section class="section" id="vestimenta" hidden>
+        <h2>Vestimenta</h2>
+        <p id="vestimenta-texto"></p>
+      </section>
+      <section class="section gift reveal" id="regalo">
+        <div class="paper-envelope" aria-hidden="true">
+          <div class="paper-envelope__pocket"></div>
+          <div class="paper-envelope__card"></div>
+          <div class="paper-envelope__flap"></div>
+          <div class="paper-envelope__seal"></div>
+        </div>
+        <h2 id="regalo-titulo">Lluvia de sobres</h2>
+        <p id="regalo-texto">Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, agradeceré que sea en efectivo.</p>
+        <p class="gift__sign" id="regalo-cierre" hidden></p>
+      </section>
+      <section class="section" id="agenda" hidden>
+        <h2>Agenda</h2>
+        <ol class="agenda" id="agenda-lista"></ol>
+      </section>
+      <section class="section" id="confirmar">
+        <h2>Confirmación</h2>
+        <div class="rsvp" id="rsvp"></div>
+      </section>
+      <section class="section reveal">
+        <h2>Gracias</h2>
+        <p class="closing" id="cierre">Gracias por acompañarme.</p>
+        <button class="btn btn--ghost" id="imprimir" type="button">Guardar o imprimir</button>
+      </section>
+      <footer class="footer">
+        <p class="config-warning" id="aviso-config" hidden>Estamos mostrando la información base de la invitación.</p>
+      </footer>
+    </article>
+  </div>
+  <a class="dock" href="#confirmar">Confirmar asistencia</a>
+  <dialog class="lightbox" id="lightbox" aria-label="Fotografía ampliada">
+    <div class="lightbox__bar">
+      <button type="button" id="foto-anterior">Anterior</button>
+      <button type="button" id="foto-cerrar">Cerrar</button>
+      <button type="button" id="foto-siguiente">Siguiente</button>
+    </div>
+    <figure class="lightbox__figure">
+      <img id="foto-grande" alt="">
+      <figcaption id="foto-leyenda"></figcaption>
+    </figure>
+  </dialog>
+  <noscript>
+    <style>#loader,.intro{display:none !important}#contenido{display:block !important}</style>
+    <p class="noscript">Para abrir el sobre, ver la cuenta regresiva y confirmar asistencia, activa JavaScript.</p>
+  </noscript>
+  <script type="module" src="js/invitation.js"></script>
+</body>
+</html>

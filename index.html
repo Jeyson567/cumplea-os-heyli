@@ -4,11 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#F9EDEB">
-  <meta name="description" content="Invitación a los XV años de Heily Pérez Orrego. Colina Country Club, Quetzaltenango.">
+  <meta name="description" content="Invitación a los XV años de Heily Pérez Orrego. Salón Los Conquistadores, Quetzaltenango.">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta name="robots" content="index,follow">
   <meta property="og:title" content="XV años de Heily Pérez Orrego">
-  <meta property="og:description" content="Colina Country Club, Quetzaltenango. Recepción a las 6:00 p. m.">
+  <meta property="og:description" content="Salón Los Conquistadores, Quetzaltenango. Recepción a las 6:00 p. m.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_GT">
   <meta property="og:url" content="https://jeyson567.github.io/cumplea-os-heyli/">
@@ -32,7 +32,7 @@
     "eventStatus": "https://schema.org/EventScheduled",
     "location": {
       "@type": "Place",
-      "name": "Colina Country Club",
+      "name": "Salón Los Conquistadores",
       "address": "Quetzaltenango, Guatemala"
     },
     "description": "Celebración de quince años."
@@ -80,13 +80,16 @@
       </section>
       <section class="section film" id="film-seccion" aria-label="Video">
         <div class="film__frame" id="film-frame">
-          <video id="film" controls playsinline preload="metadata">
+          <video id="film" autoplay loop muted playsinline preload="metadata">
             <source src="assets/img/HeilyPrez.mp4" type="video/mp4">
           </video>
         </div>
         <p class="film__note" id="film-note" hidden>Cuando tengas el video, guárdalo en assets/img con el nombre HeilyPrez.mp4, en formato MP4, y deja ese nombre en media/gallery.json.</p>
-        <button class="btn" id="film-sound" type="button" hidden>Activar sonido</button>
       </section>
+      <div class="score" id="score">
+        <audio id="score-audio" preload="none" src="assets/audio/no-crezcas-mas-instrumental.mp3.mp3"></audio>
+        <button class="score__button" id="score-toggle" type="button" hidden>Escuchar música</button>
+      </div>
       <section class="section reveal" aria-labelledby="cuenta-title">
         <h2 id="cuenta-title">Cuenta regresiva</h2>
         <div class="count" id="countdown" aria-hidden="true">
@@ -111,20 +114,20 @@
           </div>
           <div class="venue">
             <p class="eyebrow">Lugar</p>
-            <h3 id="lugar">Colina Country Club</h3>
-            <p id="direccion">Quetzaltenango</p>
+            <h3 id="lugar">Salón Los Conquistadores</h3>
+            <p id="establecimiento">Colina Country Club</p>
+            <p id="direccion">Km 223.5 carretera CITO 180, Quetzaltenango, Guatemala</p>
             <p class="note" id="lugar-nota" hidden></p>
             <div class="venue__actions">
               <a class="btn" id="como-llegar" href="https://www.google.com/maps/search/?api=1&query=Colina+Country+Club+Quetzaltenango" target="_blank" rel="noopener noreferrer">Cómo llegar</a>
             </div>
-            <iframe class="venue__map" id="mapa" title="Mapa de Colina Country Club" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://maps.google.com/maps?q=Colina+Country+Club+Quetzaltenango&z=15&output=embed"></iframe>
+            <iframe class="venue__map" id="mapa" title="Mapa de Salón Los Conquistadores, Colina Country Club" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" src="https://maps.google.com/maps?q=Colina+Country+Club+Quetzaltenango&z=15&output=embed"></iframe>
           </div>
         </div>
       </section>
       <section class="section" id="galeria-seccion" hidden>
         <h2>Galería</h2>
         <div class="editorial" id="galeria"></div>
-        <div class="gallery-more" id="galeria-mas" hidden></div>
       </section>
       <section class="section" id="vestimenta" hidden>
         <h2>Vestimenta</h2>
@@ -139,7 +142,7 @@
         </div>
         <h2 id="regalo-titulo">Lluvia de sobres</h2>
         <p id="regalo-texto">Tu presencia es mi mejor regalo, pero si deseas obsequiarme algo, agradeceré que sea en efectivo.</p>
-        <p class="gift__sign" id="regalo-cierre" hidden></p>
+        <p class="gift__sign" id="regalo-cierre">Gracias</p>
       </section>
       <section class="section" id="agenda" hidden>
         <h2>Agenda</h2>
@@ -162,9 +165,7 @@
   <a class="dock" href="#confirmar">Confirmar asistencia</a>
   <dialog class="lightbox" id="lightbox" aria-label="Fotografía ampliada">
     <div class="lightbox__bar">
-      <button type="button" id="foto-anterior">Anterior</button>
       <button type="button" id="foto-cerrar">Cerrar</button>
-      <button type="button" id="foto-siguiente">Siguiente</button>
     </div>
     <figure class="lightbox__figure">
       <img id="foto-grande" alt="">
