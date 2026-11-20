@@ -345,7 +345,7 @@ function renderRsvp() {
   root.replaceChildren()
   root.append(el('p', {
     class: 'rsvp-family',
-    text: 'IMPORTANTE: Si asistirás con acompañantes, estos deberán ser exclusivamente familiares tuyos. No está permitido llevar amigos ni personas ajenas a tu familia.'
+    text: 'IMPORTANTE: Si asistirás con acompañantes, estos deberán ser exclusivamente familiares tuyos.'
   }))
   if (!state.token) {
     root.append(el('p', { text: 'La confirmación está disponible desde tu enlace personal. Ábrelo para indicar si nos acompañas.' }))
