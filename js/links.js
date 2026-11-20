@@ -1,24 +1,10 @@
 import { isTokenShape } from './policy.js'
 
-function isAdminSegment(segment) {
-  return /^admin(?:\.html?)?$/i.test(String(segment || ''))
-}
+const OFFICIAL_SITE = 'http://heilyxv.com'
 
-function projectBasePath(pathname) {
-  const segments = String(pathname || '/').split('/').filter(Boolean)
-  const last = segments[segments.length - 1] || ''
-  if (/^index\.html?$/i.test(last) && isAdminSegment(segments[segments.length - 2])) {
-    segments.splice(-2, 2)
-  } else if (isAdminSegment(last)) {
-    segments.pop()
-  }
-  return segments.length ? `/${segments.join('/')}/` : '/'
-}
-
-/** Enlace público de una invitación, en el origen y la carpeta del proyecto. */
+/** Enlace público de una invitación, siempre en el dominio oficial. */
 export function invitationUrl(token) {
-  const { origin, pathname } = globalThis.location
-  return `${origin}${projectBasePath(pathname)}?invitacion=${encodeURIComponent(token)}`
+  return `${OFFICIAL_SITE}/?invitacion=${encodeURIComponent(token)}`
 }
 
 export function fillTemplate(template, vars) {

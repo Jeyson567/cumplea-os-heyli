@@ -21,7 +21,7 @@ export function setupNextStep({ completed, signedIn, adminExists, active }) {
 export function authFailureText(code) {
   const value = String(code || '')
   if (value === 'auth/unauthorized-domain') {
-    return 'Este dominio no está autorizado en Firebase Authentication. En jsagency-b607c, Authentication, Settings, Authorized domains, agrega el dominio de esta página. Para GitHub Pages es jeyson567.github.io. localhost ya está permitido.'
+    return 'Este dominio no está autorizado en Firebase Authentication. En jsagency-b607c, Authentication, Settings, Authorized domains, agrega el dominio de esta página. El dominio oficial es heilyxv.com. localhost ya está permitido.'
   }
   if (value === 'auth/email-already-in-use') {
     return 'Ese correo ya tiene cuenta. Entra con ella. No se creará otra cuenta ni se cambiará la contraseña.'

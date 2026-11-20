@@ -61,7 +61,7 @@ Si el audio falla, la invitación sigue abriéndose. Spotify puede pedir otro to
 
 `setup-privado.html` no aparece en la invitación ni en el panel. Firebase Hosting lo ignora y `_config.yml` lo excluye de GitHub Pages. Ocultarlo no otorga el permiso. El permiso existe solo cuando el documento `admins/{uid}` está en Firestore, y las reglas rechazan cualquier intento del navegador de crearlo.
 
-1. Firebase Console, proyecto `jsagency-b607c`, Authentication, método de acceso, activa **Correo/contraseña**. En dominios autorizados incluye `jeyson567.github.io`.
+1. Firebase Console, proyecto `jsagency-b607c`, Authentication, método de acceso, activa **Correo/contraseña**. En dominios autorizados incluye `heilyxv.com`.
 2. En VS Code, abre esta carpeta con Live Server sobre `setup-privado.html`. No uses `file://` ni `?emuladores=1` si la cuenta debe quedar en el proyecto real.
 3. Escribe correo y contraseña, de 8 a 128 caracteres. La página crea el usuario y muestra el UID. La contraseña no se escribe en el código ni en Firestore.
 4. En Firestore, pulsa **Iniciar colección**. ID de colección: `admins`. ID del documento: el UID copiado, carácter por carácter. Añade un campo `active` de tipo booleano en `true`. Guarda.
@@ -103,11 +103,11 @@ La carpeta `functions/` conserva el diseño anterior y no forma parte del despli
 
 ## Hosting
 
-La invitación permanece en GitHub Pages:
+La invitación permanece en GitHub Pages, en el dominio oficial:
 
-`https://jeyson567.github.io/cumplea-os-heyli/`
+`http://heilyxv.com/`
 
-El panel está en `https://jeyson567.github.io/cumplea-os-heyli/admin`. Los enlaces de cada invitación se arman desde esa dirección y quedan en `https://jeyson567.github.io/cumplea-os-heyli/?invitacion=TOKEN`. No uses `jsagency-b607c.web.app` para esos enlaces y no publiques este sitio con Firebase Hosting.
+El panel está en `http://heilyxv.com/admin`. Los enlaces de cada invitación, de WhatsApp y de los códigos QR quedan en `http://heilyxv.com/?invitacion=TOKEN`. No uses `jsagency-b607c.web.app` para esos enlaces y no publiques este sitio con Firebase Hosting.
 
 Las confirmaciones van a Firestore del proyecto `jsagency-b607c`. `setup-privado.html` no debe subirse.
 
